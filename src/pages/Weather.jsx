@@ -11,6 +11,16 @@ export default function Weather() {
   const [error, setError] = useState(null);
   const [cityInfo, setCityInfo] = useState(state?.city || null);
 
+  const getDailyForecast = (forecastList) => {
+    const days = {};
+    for (const entry of forecastList) {
+      const date = entry.dt.split(' ')[0]; 
+      if (!days[date]) {
+        days[date] = entry; 
+      }
+    }
+    return Object.values(days).slice(0, 5); 
+  };
   // Function to determine background based on weather and time of day
   const getBackgroundStyle = (weatherIcon) => {
     const isDaytime = weatherIcon?.includes('d');
@@ -89,6 +99,8 @@ export default function Weather() {
         }
         
         const weatherData = await getWeather(coordinates.lat, coordinates.lon);
+       
+        
         setData(weatherData);
       } catch (err) {
         console.error('Error fetching weather data:', err);
@@ -183,7 +195,7 @@ export default function Weather() {
             5-Day Forecast
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4">
-            {data.forecast.slice(0, 5).map((f) => (
+            {getDailyForecast(data.forecast).map((f) => (
               <div 
                 key={f.dt} 
                 className="p-4 bg-white/20 rounded-xl shadow-lg backdrop-blur-md transition-all duration-300 hover:transform hover:scale-105 hover:bg-white/30 group"
