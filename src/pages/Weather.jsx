@@ -96,7 +96,10 @@ export default function Weather() {
           const cityData = await fetch(
             import.meta.env.VITE_LOCATION_API_URL + `/${geonameId}`
           ).then((r) => r.json());
-          
+          if(cityData.error_code){
+            setError('City not found');
+            return;
+          }
           coordinates = cityData.coordinates;
           setCityInfo(cityData);
         }
