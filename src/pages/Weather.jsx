@@ -1,7 +1,9 @@
+
 import { useEffect, useState } from 'react';
 import { useLocation, useParams, Link } from 'react-router-dom';
 import { getWeather } from '../api/weather';
 import WeatherCard from '../components/WeatherCard';
+import ForecastCard from '../components/ForecastCard';
 
 export default function Weather() {
   const { geonameId } = useParams();
@@ -21,6 +23,7 @@ export default function Weather() {
     }
     return Object.values(days).slice(1, 6); 
   };
+
   // Function to determine background based on weather and time of day
   const getBackgroundStyle = (weatherIcon) => {
     const isDaytime = weatherIcon?.includes('d');
@@ -99,8 +102,7 @@ export default function Weather() {
         }
         
         const weatherData = await getWeather(coordinates.lat, coordinates.lon);
-       
-        
+        console.log(weatherData.forecast)
         setData(weatherData);
       } catch (err) {
         console.error('Error fetching weather data:', err);
@@ -196,41 +198,8 @@ export default function Weather() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4">
             {getDailyForecast(data.forecast).map((f) => (
-              <div 
-                key={f.dt} 
-                className="p-4 bg-white/20 rounded-xl shadow-lg backdrop-blur-md transition-all duration-300 hover:transform hover:scale-105 hover:bg-white/30 group"
-              >
-                <div className="text-center">
-                  <p className="text-sm font-medium text-white/90 mb-2">
-                    {formatDate(f.dt)}
-                  </p>
-                  <div className="bg-white/30 rounded-full p-2 w-16 h-16 mx-auto mb-2 group-hover:bg-white/40 transition-all">
-                    <img
-                      src={`https://openweathermap.org/img/wn/${f.icon}.png`}
-                      alt={f.desc}
-                      className="w-full h-full"
-                    />
-                  </div>
-                  <p className="font-bold text-2xl text-white mb-1">{f.temp}°C</p>
-                  <p className="text-xs text-white/80 capitalize">{f.desc}</p>
-                  
-                  <div className="mt-3 flex justify-between text-xs text-white/70">
-                    <div className="flex flex-col items-center">
-                      <svg className="w-4 h-4 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                      </svg>
-                      <span>{f.high}°</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <svg className="w-4 h-4 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                      </svg>
-                      <span>{f.low}°</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+              <ForecastCard key={f.dt} forecast={f} formatDate={formatDate} />
+              ))}
           </div>
         </div>
       </div>
