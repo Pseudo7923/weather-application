@@ -19,7 +19,7 @@ export default function Weather() {
         days[date] = entry; 
       }
     }
-    return Object.values(days).slice(0, 5); 
+    return Object.values(days).slice(1, 6); 
   };
   // Function to determine background based on weather and time of day
   const getBackgroundStyle = (weatherIcon) => {
